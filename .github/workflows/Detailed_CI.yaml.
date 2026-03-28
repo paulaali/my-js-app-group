@@ -39,16 +39,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: job1_checkout
 
+
     steps:
-      # Step 2.1: Setup Node.js
-      - name: 2.1 Setup Node.js 🟩
+      # Step 2.1: Checkout code
+
+      - name: 1.1 Checkout code 🟩
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Step 2.2: Setup Node.js
+      - name: 2.2 Setup Node.js 🟩
         uses: actions/setup-node@v4
         with:
           node-version: 18
         # Explanation: Installs Node.js runtime to run npm commands
 
-      # Step 2.2: Install dependencies
-      - name: 2.2 Install dependencies 🟩
+      # Step 2.3: Install dependencies
+      - name: 2.3 Install dependencies 🟩
         run: npm install
         # Explanation: Installs project packages required for code execution and tests
 
