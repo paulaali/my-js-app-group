@@ -110,8 +110,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           args: >
-            -Dsonar.projectKey=samuel-nartey_my-js-app
-            -Dsonar.organization=samuel-nartey
+            -Dsonar.projectKey=paulaali_my-js-app-group
+            -Dsonar.organization=paulaali
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
