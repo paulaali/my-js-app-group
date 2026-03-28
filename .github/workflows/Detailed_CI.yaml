@@ -1,0 +1,151 @@
+name: Node.js CI Pipeline
+
+name: Node.js CI Pipeline
+
+# ==========================
+# LEGEND (for learners):
+# ==========================
+# 🟦 Job: represents a stage in the pipeline (e.g., checkout, test, security)
+# 🟩 Step: numbered actions within each job (e.g., install dependencies, run tests)
+# 🟨 Optional Step: steps that are not mandatory but show typical DevOps practices (build, Docker)
+# ==========================
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  # ==========================
+  # Job 1: Checkout
+  # ==========================
+
+  job1_checkout:
+    name: Job 1: Checkout Source 🟦
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1.1: Checkout code
+
+      - name: 1.1 Checkout code 🟩
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        # Explanation: Pulls the latest code from GitHub so the pipeline can access it
+
+  # ==========================
+  # Job 2: Setup Environment
+  # ==========================
+
+  job2_setup:
+    name: Job 2: Setup Environment 🟦
+    runs-on: ubuntu-latest
+    needs: job1_checkout
+
+    steps:
+      # Step 2.1: Setup Node.js
+      - name: 2.1 Setup Node.js 🟩
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+        # Explanation: Installs Node.js runtime to run npm commands
+
+      # Step 2.2: Install dependencies
+      - name: 2.2 Install dependencies 🟩
+        run: npm install
+        # Explanation: Installs project packages required for code execution and tests
+
+  # ==========================
+  # Job 3: Test
+  # ==========================
+  job3_test:
+    name: Job 3: Run Tests 🟦
+    runs-on: ubuntu-latest
+    needs: job2_setup
+    steps:
+      # Step 3.1: Checkout code again (isolated runner)
+      - name: 3.1 Checkout code 🟩
+        uses: actions/checkout@v4
+
+      # Step 3.2: Run unit tests with Jest
+      - name: 3.2 Run unit tests (Jest) 🟩
+        run: npm test -- --coverage
+        # Explanation: Executes automated tests and generates coverage reports
+
+  # ==========================
+  # Job 4: Security Scan
+  # ==========================
+  job4_security:
+    name: Job 4: Security & Secret Scans 🟦
+    runs-on: ubuntu-latest
+    needs: job3_test
+
+    steps:
+      # Step 4.1: Checkout code again
+      - name: 4.1 Checkout code 🟩
+        uses: actions/checkout@v4
+
+      # Step 4.2: Gitleaks scan
+      - name: 4.2 Gitleaks scan 🟩
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Explanation: Detects secrets in git history (passwords, API keys, etc.)
+
+      # Step 4.3: Trivy Filesystem Scan
+      - name: 4.3 Trivy FS Scan 🟩
+        uses: aquasecurity/trivy-action@v1
+        with:
+          scan-type: fs
+          path: .
+        # Explanation: Scans files and packages for known vulnerabilities (CVEs)
+
+  # ==========================
+  # Job 5: Code Quality
+  # ==========================
+  job5_code_quality:
+    name: Job 5: Static Code Analysis 🟦
+    runs-on: ubuntu-latest
+    needs: job3_test
+    steps:
+      # Step 5.1: Checkout code
+      - name: 5.1 Checkout code 🟩
+        uses: actions/checkout@v4
+
+      # Step 5.2: SonarCloud Scan
+      - name: 5.2 SonarCloud Scan 🟩
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=samuel-nartey_my-js-app
+            -Dsonar.organization=samuel-nartey
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        # Explanation: Performs code quality analysis, coverage check, and detects code smells
+
+  # ==========================
+  # Job 6: Build / Package
+  # ==========================
+  job6_build:
+    name: Job 6: Build / Package 🟦
+    runs-on: ubuntu-latest
+    needs: job5_code_quality
+
+    steps:
+      # Step 6.1: Checkout code
+      - name: 6.1 Checkout code 🟩
+        uses: actions/checkout@v4
+
+      # Step 6.2: Node.js build (optional)
+      - name: 6.2 Node.js build 🟨
+        run: |
+          echo "This is where your app would be transpiled, bundled, or packaged"
+          # Example: npm run build
+        # Explanation: Prepares an artifact for deployment if needed
+
+      # Step 6.3: Docker build (optional)
+      - name: 6.3 Docker build 🟨
+        run: |
+          echo "This is where you would build a Docker image for deployment"
+          # Example: docker build -t my-js-app .
+        # Explanation: Packages your app and environment into a portable container
