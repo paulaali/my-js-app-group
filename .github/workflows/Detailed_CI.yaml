@@ -87,7 +87,7 @@ jobs:
 
       # Step 4.3: Trivy Filesystem Scan
       - name: 4.3 Trivy FS Scan 🟩
-        uses: aquasecurity/trivy-action@v1
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           scan-type: fs
           path: .
