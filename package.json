@@ -1,25 +1,19 @@
 {
-  "name": "my-js-app",                  // Name of your project/package
-  "version": "1.0.0",                   // Version of your project
-  "description": "A JavaScript project with CI/CD pipeline, Jest, SonarCloud", // Short description
-  "license": "ISC",                     // License type
-  "author": "",                          // Author name (optional)
-  "type": "commonjs",                   // Module type (CommonJS for Node.js)
-  
-  // Entry point of your app when you run "node ."
-  // This should point to the file that starts your server (index.js)
+  "name": "my-js-app",
+  "version": "1.0.0",
+  "description": "A JavaScript project with CI/CD pipeline, Jest, SonarCloud",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
   "main": "src/index.js",
-
   "scripts": {
-    "test": "jest --coverage"           // Command to run tests with coverage
+    "test": "jest --coverage"
   },
-
   "dependencies": {
-    "express": "^5.2.1"                 // Runtime dependency: Express.js web framework
+    "express": "^5.2.1"
   },
-
   "devDependencies": {
-    "jest": "^30.3.0",                  // Dev dependency: Jest for testing
-    "supertest": "^6.3.3"               // Dev dependency: Supertest for API testing
+    "jest": "^30.3.0",
+    "supertest": "^6.3.3"
   }
 }
